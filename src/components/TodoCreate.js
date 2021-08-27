@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { MdAdd } from 'react-icons/md';
+import { useTodoNextId } from '../TodoContext';
 
 // 열고 닫을 때는 상태관리가 필요하다. useState 사용
 const CircleButton = styled.button`
@@ -79,6 +80,8 @@ function TodoCreate() {
   const [open, setOpen] = useState(false);
   const onToggle = () => setOpen(!open);
 
+  // const nextId = useTodoNextId();
+  // nextId.current += 1;
   return (
     <>
       {open && (
