@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled, { css } from 'styled-components';
 import { MdAdd } from 'react-icons/md';
-import { useTodoNextId } from '../TodoContext';
+import { useTodoDispatch, useTodoNextId } from '../TodoContext';
 
 // 열고 닫을 때는 상태관리가 필요하다. useState 사용
 const CircleButton = styled.button`
@@ -78,7 +78,26 @@ const Input = styled.input`
 
 function TodoCreate() {
   const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('');
+  const dispatch = useTodoDispatch();
+  const nextId = useTodoNextId();
+
   const onToggle = () => setOpen(!open);
+  const onChange = e => setValue(e.target.value);
+  const onSubmit = e => {
+    e.preventDefault();
+    dispatch({
+      type: 'CREATE',
+      todo: {
+        id: nextId.current,
+        text: value,
+        done: false,
+      }
+    })
+    setValue('');
+    setOpen(false);
+    nextId.current += 1;
+  }
 
   // const nextId = useTodoNextId();
   // nextId.current += 1;
@@ -86,8 +105,8 @@ function TodoCreate() {
     <>
       {open && (
         <InsertFormPositioner>
-          <InsertForm>
-            <Input placeholder="할 일을 입력 후, Enter 를 누르세요" autoFocus />
+          <InsertForm onSubmit={onSubmit}>
+            <Input placeholder="할 일을 입력 후, Enter 를 누르세요" autoFocus onChange={onChange} value={value} />
           </InsertForm>
         </InsertFormPositioner>
       )}
@@ -98,4 +117,4 @@ function TodoCreate() {
   );
 }
 
-export default TodoCreate;
+export default React.memo(TodoCreate);
